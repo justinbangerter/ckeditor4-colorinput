@@ -8,19 +8,21 @@ This is a new color input element that can be defined in the dialog definition.
 *  Extract to your plugins directory and add the 'colorinput' plugin.
 *  Add type: "color" elements to your dialogs. Example:
 
-    CKEDITOR.dialog.add('colorinputdialog', function(editor) {
-        return {
-            title: 'Color Input View',
-            contents: [{
-                id: 'info',
-                label: 'Info',
-                elements: [{
-                    id: 'color',
-                    type: 'color',
-                    'default': 'red', //optional
-                    layout: 'expanded', // optional: 'expanded' (default), 'compact', or 'minimal'
-                    label: 'Background Color'
-                }]
+```javascript
+CKEDITOR.dialog.add('colorinputdialog', function(editor) {
+    return {
+        title: 'Color Input View',
+        contents: [{
+            id: 'info',
+            label: 'Info',
+            elements: [{
+                id: 'color',
+                type: 'color',
+                'default': 'red', //optional
+                layout: 'expanded', // optional: 'expanded' (default), 'compact', or 'minimal'
+                label: 'Background Color'
             }]
-        }
-    });
+        }]
+    }
+});
+```
