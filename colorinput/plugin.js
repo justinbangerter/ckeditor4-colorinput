@@ -142,7 +142,7 @@ CKEDITOR.plugins.add( 'colorinput', {
                     textField: function() { return this.getEl(this._.textId); },
                     chooseField: function() { return this.getEl(this._.chooseId); },
                     previewField: function() { return this.getEl(this._.previewId); },
-                    domField: function() { return this.getEl(this._.domId); },
+                    domField: function() { return this.getEl(this._.domId); }
                 });
                 colorinput.prototype.getValue = function() {return this.textField().getValue(); };
                 colorinput.prototype.setValue = function(v) {
