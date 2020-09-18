@@ -60,9 +60,16 @@ Other properties from inherited classes may work, but have not been thoroughly t
 ## Testing and Contributing
 
 * Clone this repository
-* Clone CKEditor 4 into this repository
-* run ln -s ckeditor/plugins/colorinput colorinput
-* Setup a [CKEditor testing environment](https://ckeditor.com/docs/ckeditor4/latest/guide/dev_tests.html)
+* cd into this repository
+* `git clone https://github.com/ckeditor/ckeditor4.git ckeditor`
+* `cd ckeditor`
+* `ln -s ../../colorinput plugins/colorinput`
+* Setup a [CKEditor testing environment](https://ckeditor.com/docs/ckeditor4/latest/guide/dev_tests.html) Example:
+  * `nvm use 11.0.0`
+  * `npm install`
+  * `bender init`
+  * `bender server run`
 * When Bender is running, go to localhost:1030 and search for colorinput
 * Remove the "is:unit" tag to see manual tests
-* Tests go into the colorinput/tests folder
+* New tests go into the colorinput/tests folder
+* Send bug reports and pull requests to the GitHub repo
