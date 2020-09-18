@@ -38,7 +38,7 @@ CKEDITOR.dialog.add('colorinputdialog', function(editor) {
 ### Hierarchy
 
 - [uiElement](https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_dialog_definition_uiElement.html)
--- [labeledElement](https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_dialog_definition_labeledElement.html)
+  - [labeledElement](https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_dialog_definition_labeledElement.html)
 
 ### Properties
 
