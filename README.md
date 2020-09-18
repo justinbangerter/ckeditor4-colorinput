@@ -44,7 +44,7 @@ CKEDITOR.dialog.add('colorinputdialog', function(editor) {
 
 * id (String): ID of the ui element (needed for CKEditor to call setup/commit)
 * setup (function): Executes whenever parent dialog's setupContent method is called. Receives arguments passed to setupContent.
-* commit (function): Executes whenever parent dialog's commitContent method is called. Receives arguments passed to setupContent.
+* commit (function): Executes whenever parent dialog's commitContent method is called. Receives arguments passed to commitContent.
 * default (String): Optional. When the parent dialog is loaded, this element will be set with this String.
 * type (String): Required. Must be 'color'
 * layout (String): Optional. 'expanded' (the default value), 'compact', 'minimal'
