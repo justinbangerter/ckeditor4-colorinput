@@ -59,6 +59,16 @@
                                     commit: function(el) {
                                         editor.getSelection().getStartElement().data('minimalcolor', this.getValue());
                                     }
+                                },{
+                                    id: 'defaultpreview',
+                                    type: 'color',
+                                    label: 'Default Color Input',
+                                    setup: function(el) {
+                                        this.setValue(editor.getSelection().getStartElement().data('defaultcolor'));
+                                    },
+                                    commit: function(el) {
+                                        editor.getSelection().getStartElement().data('defaultcolor', this.getValue());
+                                    }
                                 }]
                             }],
                             onShow: function() {

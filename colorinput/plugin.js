@@ -6,8 +6,6 @@ CKEDITOR.plugins.add( 'colorinput', {
         CKEDITOR.dialog.addUIElement('color', {
             build: function(dialog, elementDefinition, htmlList) {
                 function colorinput(dialog, elementDefinition, htmlList) {
-                    if ( arguments.length < 3) return;
-
                     this._ = {
                         domId : CKEDITOR.tools.getNextId() + '_colorInput',
                         textId : CKEDITOR.tools.getNextId() + '_colorTxt',
@@ -18,27 +16,18 @@ CKEDITOR.plugins.add( 'colorinput', {
                     if ( elementDefinition.validate )
                         this.validate = elementDefinition.validate;
 
-                    this.layout = elementDefinition.layout;
-                    if ( !this.layout )
-                        this.layout = 'expanded'
+                    this.layout = elementDefinition.layout || 'expanded';
 
                     if ( this.layout == 'expanded' || this.layout == 'compact' ) {
                         dialog.on('load', function() {
                             if ( this._['default'] ) {
-                                this.previewField().setStyle('background-color', this._['default']);
                                 this.textField().setValue(this._['default']);
+                                this.previewField().$ && this.previewField().setStyle('background-color', this._['default']);
                             }
                             this.textField().on('input', function() {
-                                this.previewField().setStyle('background-color', this.textField().getValue());
+                                this.previewField().$ && this.previewField().setStyle('background-color', this.textField().getValue());
                             }, this);
-                            this.chooseField().on('click', function() {
-                                editor.getColorFromDialog(function(color) {
-                                    if ( color != null )
-                                        this.textField().setValue(color).fire('input');
-                                }, this, {
-                                    selectionColor: this.getValue()
-                                });
-                            }, this);
+                            this.initClick(this.chooseField());
                         }, this);
                     }
                     else if ( this.layout == 'minimal' ) {
@@ -46,14 +35,7 @@ CKEDITOR.plugins.add( 'colorinput', {
                             if ( this._['default'] ) {
                                 this.textField().setValue(this._['default']);
                             }
-                            this.textField().on('click', function() {
-                                editor.getColorFromDialog(function(color) {
-                                    if ( color != null )
-                                        this.textField().setValue(color);
-                                }, this, {
-                                    selectionColor: this.getValue()
-                                });
-                            }, this);
+                            this.initClick(this.textField());
                         }, this);
                     }
                     else {
@@ -63,7 +45,7 @@ CKEDITOR.plugins.add( 'colorinput', {
                     var innerHTML = function() {
                         function wrapperDiv() {
                             var html = [];
-                            html.push('<div id="' + this._.domId+'" class="cke_dialog_ui_input_text" role="presentation">');
+                            html.push('<div id="' + this._.domId + '" class="cke_dialog_ui_input_text" role="presentation">');
                             for ( var i = 0; i < arguments.length; i++ )
                                 html.push(arguments[i]);
                             html.push('</div>');
@@ -144,6 +126,16 @@ CKEDITOR.plugins.add( 'colorinput', {
                     previewField: function() { return this.getEl(this._.previewId); },
                     domField: function() { return this.getEl(this._.domId); }
                 });
+                colorinput.prototype.initClick = function(field) {
+                    field.on('click', function() {
+                        editor.getColorFromDialog(function(color) {
+                            if ( color != null )
+                                this.textField().setValue(color).fire('input');
+                        }, this, {
+                            selectionColor: this.getValue()
+                        });
+                    }, this);
+                };
                 colorinput.prototype.getValue = function() {return this.textField().getValue(); };
                 colorinput.prototype.setValue = function(v) {
                     this.textField().setValue(v).fire('input');
