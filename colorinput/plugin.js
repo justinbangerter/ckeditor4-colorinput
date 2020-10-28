@@ -18,16 +18,6 @@ CKEDITOR.plugins.add( 'colorinput', {
 
                     this.layout = elementDefinition.layout || 'expanded';
 
-                    const dialogOpener;
-                    if ( this.layout == 'expanded' || this.layout == 'compact' ) {
-                        this.dialogOpener = this.chooseField();
-                    else if ( this.layout == 'minimal' ) {
-                        this.dialogOpener = this.textField();
-                    }
-                    else {
-                        throw 'Unknown color input layout: ' + this.layout;
-                    }
-
                     dialog.on('load', function() {
                         if ( this._['default'] ) {
                             this.setValue(this._['default']);
@@ -36,7 +26,14 @@ CKEDITOR.plugins.add( 'colorinput', {
                         this.textField().on('input', function() {
                             this.setPreview(this.getValue());
                         }, this);
-                        this.initClick(this.dialogOpener);
+                        this.dialogOpener().on('click', function() {
+                            editor.getColorFromDialog(function(color) {
+                                if ( color != null )
+                                    this.textField().setValue(color).fire('input');
+                            }, this, {
+                                selectionColor: this.getValue()
+                            });
+                        }, this);
                     }, this);
 
 
@@ -124,16 +121,15 @@ CKEDITOR.plugins.add( 'colorinput', {
                     previewField: function() { return this.getEl(this._.previewId); },
                     domField: function() { return this.getEl(this._.domId); }
                 });
-                colorinput.prototype.initClick = function(field) {
-                    field.on('click', function() {
-                        editor.getColorFromDialog(function(color) {
-                            if ( color != null )
-                                this.textField().setValue(color).fire('input');
-                        }, this, {
-                            selectionColor: this.getValue()
-                        });
-                    }, this);
-                };
+                colorinput.prototype.dialogOpener = function() {
+                    switch( this.layout ) {
+                        case 'expanded': return this.chooseField();
+                        case 'compact': return this.chooseField();
+                        case 'minimal': return this.textField();
+                        default:
+                            throw 'Unknown color input layout: ' + this.layout;
+                    }
+                }
                 colorinput.prototype.setPreview = function(color) {
                     const field = this.previewField();
                     field.$ && field.setStyle('background-color', color);
