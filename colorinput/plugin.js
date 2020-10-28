@@ -18,29 +18,27 @@ CKEDITOR.plugins.add( 'colorinput', {
 
                     this.layout = elementDefinition.layout || 'expanded';
 
+                    const dialogOpener;
                     if ( this.layout == 'expanded' || this.layout == 'compact' ) {
-                        dialog.on('load', function() {
-                            if ( this._['default'] ) {
-                                this.textField().setValue(this._['default']);
-                                this.previewField().$ && this.previewField().setStyle('background-color', this._['default']);
-                            }
-                            this.textField().on('input', function() {
-                                this.previewField().$ && this.previewField().setStyle('background-color', this.textField().getValue());
-                            }, this);
-                            this.initClick(this.chooseField());
-                        }, this);
-                    }
+                        this.dialogOpener = this.chooseField();
                     else if ( this.layout == 'minimal' ) {
-                        dialog.on('load', function() {
-                            if ( this._['default'] ) {
-                                this.textField().setValue(this._['default']);
-                            }
-                            this.initClick(this.textField());
-                        }, this);
+                        this.dialogOpener = this.textField();
                     }
                     else {
                         throw 'Unknown color input layout: ' + this.layout;
                     }
+
+                    dialog.on('load', function() {
+                        if ( this._['default'] ) {
+                            this.setValue(this._['default']);
+                            this.setPreview(this._['default']);
+                        }
+                        this.textField().on('input', function() {
+                            this.setPreview(this.getValue());
+                        }, this);
+                        this.initClick(this.dialogOpener);
+                    }, this);
+
 
                     var innerHTML = function() {
                         function wrapperDiv() {
@@ -135,6 +133,10 @@ CKEDITOR.plugins.add( 'colorinput', {
                             selectionColor: this.getValue()
                         });
                     }, this);
+                };
+                colorinput.prototype.setPreview = function(color) {
+                    const field = this.previewField();
+                    field.$ && field.setStyle('background-color', color);
                 };
                 colorinput.prototype.getValue = function() {return this.textField().getValue(); };
                 colorinput.prototype.setValue = function(v) {
