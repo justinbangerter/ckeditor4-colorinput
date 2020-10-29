@@ -32,10 +32,10 @@
                                     layout: 'expanded', // default layout
                                     'default': 'chartreuse',
                                     setup: function(el) {
-                                        this.setValue(editor.getSelection().getStartElement().data('expandedcolor'));
+                                        this.setValue(el.data('expandedcolor'));
                                     },
                                     commit: function(el) {
-                                        editor.getSelection().getStartElement().data('expandedcolor', this.getValue());
+                                        el.data('expandedcolor', this.getValue());
                                     }
                                 },{
                                     id: 'compactpreview',
@@ -44,10 +44,10 @@
                                     layout: 'compact',
                                     'default': '#f93',
                                     setup: function(el) {
-                                        this.setValue(editor.getSelection().getStartElement().data('compactcolor'));
+                                        this.setValue(el.data('compactcolor'));
                                     },
                                     commit: function(el) {
-                                        editor.getSelection().getStartElement().data('compactcolor', this.getValue());
+                                        el.data('compactcolor', this.getValue());
                                     }
                                 },{
                                     id: 'minimalpreview',
@@ -56,20 +56,20 @@
                                     layout: 'minimal',
                                     'default': '#909',
                                     setup: function(el) {
-                                        this.setValue(editor.getSelection().getStartElement().data('minimalcolor'));
+                                        this.setValue(el.data('minimalcolor'));
                                     },
                                     commit: function(el) {
-                                        editor.getSelection().getStartElement().data('minimalcolor', this.getValue());
+                                        el.data('minimalcolor', this.getValue());
                                     }
                                 },{
                                     id: 'defaultpreview',
                                     type: 'color',
                                     label: 'Default Color Input',
                                     setup: function(el) {
-                                        this.setValue(editor.getSelection().getStartElement().data('defaultcolor'));
+                                        this.setValue(el.data('defaultcolor'));
                                     },
                                     commit: function(el) {
-                                        editor.getSelection().getStartElement().data('defaultcolor', this.getValue());
+                                        el.data('defaultcolor', this.getValue());
                                     }
                                 }]
                             }],
