@@ -18,7 +18,9 @@ CKEDITOR.plugins.add( 'colorinput', {
                     if ( elementDefinition.validate )
                         this.validate = elementDefinition.validate;
 
-                    this.layout = elementDefinition.layout || 'expanded';
+                    this.layout = this.layout || elementDefinition.layout;
+                    this.layout = this.layout || editor.config.colorInputLayout;
+                    this.layout = this.layout || 'expanded';
 
                     dialog.on('load', function() {
                         this.textField().on('input', function() {
