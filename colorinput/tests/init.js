@@ -4,71 +4,101 @@
 (function() {
     'use strict';
 
+    function resumable(tc, fn) {
+        return function() {
+            let args = arguments
+            tc.resume(function() {
+                fn.apply(this, args);
+            }.bind(this));
+        }.bind(this);
+    }
+
+    function setup(open_dlg, callback, html) {
+        let bot = this;
+        let tc = bot.testCase;
+
+        bot.editor.once('selectionChange', function() {
+            bot.dialog( 'testDialog', function( dialog ) {
+                open_dlg(dialog);
+                bot.editor.once('dialogShow', resumable(tc, function(evt) {
+                    callback(evt, dialog);
+                }));
+                tc.wait();
+            } );
+        });
+        bot.setHtmlWithSelection(
+            html
+        );
+    }
+
+    function close(evt, callback) {
+        let bot = this;
+        let tc = bot.testCase;
+
+        bot.editor.once('dialogHide', resumable(tc, callback));
+        evt.data.getButton( 'ok' ).click();
+        tc.wait();
+    }
+
+    function checkInput(input, val) {
+        assert.areSame( val, input.getValue());
+        if (input.previewField())
+            assert.areSame( val, input.previewField().getStyle('background-color'));
+    }
+
     function testSetColorDialog(input_id, open_dlg, initial_color) {
+        return function() {
+            let bot = this.editorBot;
+            let tc = bot.testCase;
+
+            setup.bind(bot)(open_dlg, function (evt, dialog) {
+                assert.areSame(initial_color, evt.data.getContentElement('picker', 'selectedColor').getValue());
+                evt.data.getContentElement('picker', 'selectedColor').setValue('red');
+                close.bind(bot)(evt, function (evt) {
+                    checkInput(dialog.getContentElement('info', input_id), 'red');
+                    dialog.getButton( 'ok' ).click();
+                });
+            }, '[<div data-expandedcolor="#333" data-compactcolor="#444" data-minimalcolor="#555">&nbsp;</div>]');
+        }
+    }
+
+    function testClearColorDialog(input_id, open_dlg, initial_color, whileopen) {
         return function() {
             var bot = this.editorBot;
             var tc = bot.testCase;
 
-            bot.editor.once('selectionChange', function() {
-                bot.dialog( 'testDialog', function( dialog ) {
-                    open_dlg(dialog);
-                    bot.editor.once('dialogShow', function(evt) {
-                        tc.resume( function() {
-                            assert.areSame(initial_color, evt.data.getContentElement('picker', 'selectedColor').getValue());
-                            evt.data.getContentElement('picker', 'selectedColor').setValue('red');
-                            bot.editor.once('dialogHide', function(evt) {
-                                tc.resume( function() {
-                                    var input = dialog.getContentElement('info', input_id);
-                                    assert.areSame( 'red', input.getValue());
-                                    if (input.previewField().$)
-                                        assert.areSame( 'red', input.previewField().getStyle('background-color'));
-                                    dialog.getButton( 'ok' ).click();
-                                });
-                            });
-                            evt.data.getButton( 'ok' ).click();
-                            tc.wait();
-                        });
-                    });
-                    tc.wait();
-                } );
-            });
-            bot.setHtmlWithSelection(
-                '[<div data-expandedcolor="#333" data-compactcolor="#444" data-minimalcolor="#555">&nbsp;</div>]'
-            );
+            setup.bind(bot)(open_dlg, function (evt, dialog) {
+                assert.areSame(initial_color, evt.data.getContentElement('picker', 'selectedColor').getValue());
+                evt.data.getContentElement('picker', 'clear').click();
+                close.bind(bot)(evt, function (evt) {
+                    checkInput(dialog.getContentElement('info', input_id), '');
+                    dialog.getButton( 'ok' ).click();
+                });
+            }, '[<div data-expandedcolor="#333" data-compactcolor="#444" data-minimalcolor="#555">&nbsp;</div>]');
         };
     }
 
-    function testClearColorDialog(input_id, open_dlg, initial_color) {
+    function testDefaultColorDialog(input_id, open_dlg, default_color, initial_color) {
         return function() {
             var bot = this.editorBot;
             var tc = bot.testCase;
 
-            bot.editor.once('selectionChange', function() {
-                bot.dialog( 'testDialog', function( dialog ) {
-                    open_dlg(dialog);
-                    bot.editor.once('dialogShow', function(evt) {
-                        tc.resume( function() {
-                            assert.areSame(initial_color, evt.data.getContentElement('picker', 'selectedColor').getValue());
-                            evt.data.getContentElement('picker', 'clear').click();
-                            bot.editor.once('dialogHide', function(evt) {
-                                tc.resume( function() {
-                                    var input = dialog.getContentElement('info', input_id);
-                                    assert.areSame( '', input.getValue());
-                                    if (input.previewField().$)
-                                        assert.areSame( '', input.previewField().getStyle('background-color'));
-                                    dialog.getButton( 'ok' ).click();
-                                });
-                            });
-                            evt.data.getButton( 'ok' ).click();
-                            tc.wait();
-                        });
-                    });
-                    tc.wait();
-                } );
-            });
-            bot.setHtmlWithSelection(
-                '[<div data-expandedcolor="#333" data-compactcolor="#444" data-minimalcolor="#555">&nbsp;</div>]'
-            );
+            setup.bind(bot)(open_dlg, function (evt, dialog) {
+                assert.areSame(default_color, evt.data.getContentElement('picker', 'selectedColor').getValue());
+                checkInput(dialog.getContentElement('info', input_id), default_color);
+                dialog.getButton( 'ok' ).click();
+            }, '[<div>&nbsp;</div>]');
+
+            setup.bind(bot)(open_dlg, function (evt, dialog) {
+                assert.areSame(default_color, evt.data.getContentElement('picker', 'selectedColor').getValue());
+                checkInput(dialog.getContentElement('info', input_id), initial_color);
+                dialog.getButton( 'ok' ).click();
+            }, '[<div data-expandedcolor="#333" data-compactcolor="#444" data-minimalcolor="#555">&nbsp;</div>]');
+            setup.bind(bot)(open_dlg, function (evt, dialog) {
+                assert.areSame(default_color, evt.data.getContentElement('picker', 'selectedColor').getValue());
+                checkInput(dialog.getContentElement('info', input_id), default_color);
+                dialog.getButton( 'ok' ).click();
+            }, '[<div>&nbsp;</div>]');
         };
     }
 
@@ -90,22 +120,24 @@
                             layout: 'expanded', // default layout
                             'default': 'chartreuse',
                             setup: function(el) {
-                                this.setValue(editor.getSelection().getStartElement().data('expandedcolor'));
+                                if (el.data('expandedcolor'))
+                                    this.setValue(el.data('expandedcolor'));
                             },
                             commit: function(el) {
-                                editor.getSelection().getStartElement().data('expandedcolor', this.getValue());
+                                el.data('expandedcolor', this.getValue());
                             }
                         },{
                             id: 'compactpreview',
                             type: 'color',
                             label: 'Compact Color Input',
                             layout: 'compact',
-                            'default': '#f93',
+                            'default': 'rgb(255, 153, 51)',
                             setup: function(el) {
-                                this.setValue(editor.getSelection().getStartElement().data('compactcolor'));
+                                if (el.data('compactcolor'))
+                                    this.setValue(el.data('compactcolor'));
                             },
                             commit: function(el) {
-                                editor.getSelection().getStartElement().data('compactcolor', this.getValue());
+                                el.data('compactcolor', this.getValue());
                             }
                         },{
                             id: 'minimalpreview',
@@ -114,10 +146,11 @@
                             layout: 'minimal',
                             'default': '#909',
                             setup: function(el) {
-                                this.setValue(editor.getSelection().getStartElement().data('minimalcolor'));
+                                if (el.data('minimalcolor'))
+                                    this.setValue(el.data('minimalcolor'));
                             },
                             commit: function(el) {
-                                editor.getSelection().getStartElement().data('minimalcolor', this.getValue());
+                                el.data('minimalcolor', this.getValue());
                             }
                         }]
                     }],
@@ -165,5 +198,14 @@
         'test colordialog clear minimal': testClearColorDialog('minimalpreview', function(dialog) {
             dialog.getContentElement('info', 'minimalpreview').textField().fire('click');
         }, '#555'),
+        'test colordialog default expanded': testDefaultColorDialog('expandedpreview', function(dialog) {
+            dialog.getContentElement('info', 'expandedpreview').chooseField().fire('click');
+        }, 'chartreuse', '#333'),
+        'test colordialog default compact': testDefaultColorDialog('compactpreview', function(dialog) {
+            dialog.getContentElement('info', 'compactpreview').chooseField().fire('click');
+        }, 'rgb(255, 153, 51)', '#444'),
+        'test colordialog default minimal': testDefaultColorDialog('minimalpreview', function(dialog) {
+            dialog.getContentElement('info', 'minimalpreview').textField().fire('click');
+        }, '#909', '#555'),
     } );
 })();
