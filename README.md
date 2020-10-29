@@ -40,6 +40,10 @@ CKEDITOR.dialog.add('colorinputdialog', function(editor) {
 - [uiElement](https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_dialog_definition_uiElement.html)
   - [labeledElement](https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_dialog_definition_labeledElement.html)
 
+### Editor config options
+
+* colorInputLayout (String): Optional. 'expanded' (the default value), 'compact', 'minimal'. Sets the layout of all color inputs in the editor. Color inputs that define their own layout explicitly will override this setting.
+
 ### Properties
 
 * id (String): ID of the ui element (needed for CKEditor to call setup/commit)
