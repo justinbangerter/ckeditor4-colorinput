@@ -10,7 +10,8 @@ CKEDITOR.plugins.add( 'colorinput', {
                         domId : CKEDITOR.tools.getNextId() + '_colorInput',
                         textId : CKEDITOR.tools.getNextId() + '_colorTxt',
                         chooseId : CKEDITOR.tools.getNextId() + '_colorChoose',
-                        previewId : CKEDITOR.tools.getNextId() + '_colorPreview'
+                        previewId : CKEDITOR.tools.getNextId() + '_colorPreview',
+                        'default': elementDefinition['default']
                     };
 
                     if ( elementDefinition.validate )
@@ -19,7 +20,6 @@ CKEDITOR.plugins.add( 'colorinput', {
                     this.layout = elementDefinition.layout || 'expanded';
 
                     dialog.on('load', function() {
-                        this._['default'] && this.setValue(this._['default']);
                         this.textField().on('input', function() {
                             this.setPreview(this.getValue());
                         }, this);
