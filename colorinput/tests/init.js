@@ -6,7 +6,7 @@
 
     function resumable(tc, fn) {
         return function() {
-            let args = arguments
+            var args = arguments;
             tc.resume(function() {
                 fn.apply(this, args);
             }.bind(this));
@@ -14,8 +14,8 @@
     }
 
     function setup(open_dlg, callback, html) {
-        let bot = this;
-        let tc = bot.testCase;
+        var bot = this;
+        var tc = bot.testCase;
 
         bot.editor.once('selectionChange', function() {
             bot.dialog( 'testDialog', function( dialog ) {
@@ -32,8 +32,8 @@
     }
 
     function close(evt, callback) {
-        let bot = this;
-        let tc = bot.testCase;
+        var bot = this;
+        var tc = bot.testCase;
 
         bot.editor.once('dialogHide', resumable(tc, callback));
         evt.data.getButton( 'ok' ).click();
@@ -48,8 +48,8 @@
 
     function testSetColorDialog(input_id, open_dlg, initial_color) {
         return function() {
-            let bot = this.editorBot;
-            let tc = bot.testCase;
+            var bot = this.editorBot;
+            var tc = bot.testCase;
 
             setup.bind(bot)(open_dlg, function (evt, dialog) {
                 assert.areSame(initial_color, evt.data.getContentElement('picker', 'selectedColor').getValue());

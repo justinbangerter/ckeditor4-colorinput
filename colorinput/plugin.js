@@ -37,7 +37,7 @@ CKEDITOR.plugins.add( 'colorinput', {
                     }, this);
 
 
-                    const innerHTML = function() {
+                    var innerHTML = function() {
                         function wrapperDiv() {
                             var html = [];
                             html.push('<div id="' + this._.domId + '" class="cke_dialog_ui_input_text" role="presentation">');
@@ -158,7 +158,7 @@ CKEDITOR.plugins.add( 'colorinput', {
                     }
                 };
                 colorinput.prototype.setPreview = function(color) {
-                    const field = this.previewField();
+                    var field = this.previewField();
                     field && field.setStyle('background-color', color);
                 };
                 colorinput.prototype.getValue = function() {
