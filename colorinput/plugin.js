@@ -19,17 +19,14 @@ CKEDITOR.plugins.add( 'colorinput', {
                     this.layout = elementDefinition.layout || 'expanded';
 
                     dialog.on('load', function() {
-                        if ( this._['default'] ) {
-                            this.setValue(this._['default']);
-                            this.setPreview(this._['default']);
-                        }
+                        this._['default'] && this.setValue(this._['default']);
                         this.textField().on('input', function() {
                             this.setPreview(this.getValue());
                         }, this);
                         this.dialogOpener().on('click', function() {
                             editor.getColorFromDialog(function(color) {
                                 if ( color != null )
-                                    this.textField().setValue(color).fire('input');
+                                    this.setValue(color);
                             }, this, {
                                 selectionColor: this.getValue()
                             });
@@ -136,7 +133,8 @@ CKEDITOR.plugins.add( 'colorinput', {
                 };
                 colorinput.prototype.getValue = function() {return this.textField().getValue(); };
                 colorinput.prototype.setValue = function(v) {
-                    this.textField().setValue(v).fire('input');
+                    this.textField().setValue(v);
+                    this.setPreview(v);
                     return this;
                 };
                 return new colorinput(dialog, elementDefinition, htmlList);
