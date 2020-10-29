@@ -32,7 +32,8 @@
                                     layout: 'expanded', // default layout
                                     'default': 'chartreuse',
                                     setup: function(el) {
-                                        this.setValue(el.data('expandedcolor'));
+                                        if (el.data('expandedcolor'))
+                                            this.setValue(el.data('expandedcolor'));
                                     },
                                     commit: function(el) {
                                         el.data('expandedcolor', this.getValue());
@@ -44,7 +45,8 @@
                                     layout: 'compact',
                                     'default': '#f93',
                                     setup: function(el) {
-                                        this.setValue(el.data('compactcolor'));
+                                        if (el.data('compactcolor'))
+                                            this.setValue(el.data('compactcolor'));
                                     },
                                     commit: function(el) {
                                         el.data('compactcolor', this.getValue());
@@ -56,7 +58,8 @@
                                     layout: 'minimal',
                                     'default': '#909',
                                     setup: function(el) {
-                                        this.setValue(el.data('minimalcolor'));
+                                        if (el.data('minimalcolor'))
+                                            this.setValue(el.data('minimalcolor'));
                                     },
                                     commit: function(el) {
                                         el.data('minimalcolor', this.getValue());
@@ -66,7 +69,8 @@
                                     type: 'color',
                                     label: 'Default Color Input',
                                     setup: function(el) {
-                                        this.setValue(el.data('defaultcolor'));
+                                        if (el.data('defaultcolor'))
+                                            this.setValue(el.data('defaultcolor'));
                                     },
                                     commit: function(el) {
                                         el.data('defaultcolor', this.getValue());

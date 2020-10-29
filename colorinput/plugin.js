@@ -11,8 +11,9 @@ CKEDITOR.plugins.add( 'colorinput', {
                         textId : CKEDITOR.tools.getNextId() + '_colorTxt',
                         chooseId : CKEDITOR.tools.getNextId() + '_colorChoose',
                         previewId : CKEDITOR.tools.getNextId() + '_colorPreview',
-                        'default': elementDefinition['default']
                     };
+                    this._['default'] = this._.initValue = elementDefinition['default'] || '';
+                    this._.required = elementDefinition.required || false;
 
                     if ( elementDefinition.validate )
                         this.validate = elementDefinition.validate;
@@ -116,11 +117,34 @@ CKEDITOR.plugins.add( 'colorinput', {
                     if (!el) return null;
                     return new CKEDITOR.dom.element(el);
                 }
-                colorinput.prototype = CKEDITOR.tools.extend( new CKEDITOR.ui.dialog.labeledElement(), {
-                    textField: function() { return getEl(this._.textId); },
-                    chooseField: function() { return getEl(this._.chooseId); },
-                    previewField: function() { return getEl(this._.previewId); },
-                    domField: function() { return getEl(this._.domId); }
+                colorinput.prototype = CKEDITOR.tools.extend( CKEDITOR.ui.dialog.labeledElement.prototype, {
+                    textField: function() {
+                        return getEl(this._.textId);
+                    },
+                    chooseField: function() {
+                        return getEl(this._.chooseId);
+                    },
+                    previewField: function() {
+                        return getEl(this._.previewId);
+                    },
+                    domField: function() {
+                        return getEl(this._.domId);
+                    },
+                    isChanged: function() {
+                        return this.getValue() != this.getInitValue();
+                    },
+                    reset: function( noChangeEvent ) {
+                        this.setValue( this.getInitValue(), noChangeEvent );
+                    },
+                    setInitValue: function() {
+                        this._.initValue = this.getValue();
+                    },
+                    resetInitValue: function() {
+                        this._.initValue = this._[ 'default' ];
+                    },
+                    getInitValue: function() {
+                        return this._.initValue;
+                    }
                 });
                 colorinput.prototype.dialogOpener = function() {
                     switch( this.layout ) {
